@@ -1,0 +1,42 @@
+package background;
+
+import org.lwjgl.util.vector.Matrix4f;
+
+import entities.Camera;
+
+import shaders.ShaderProgram;
+import toolbox.Maths;
+
+public class BackgroundShader extends ShaderProgram{
+
+	private static final String VERTEX_FILE = "src/background/skyboxVertexShader.txt";
+	private static final String FRAGMENT_FILE = "src/background/skyboxFragmentShader.txt";
+	
+	private int location_projectionMatrix;
+	private int location_viewMatrix;
+	
+	public BackgroundShader() {
+		super(VERTEX_FILE, FRAGMENT_FILE);
+	}
+	
+	public void loadProjectionMatrix(Matrix4f matrix){
+		super.loadMatrixint(location_projectionMatrix, matrix);
+	}
+
+	public void loadViewMatrix(Camera camera){
+		Matrix4f matrix = Maths.createViewMatrix(camera);
+		super.loadMatrixint(location_viewMatrix, matrix);
+	}
+	
+	@Override
+	protected void getAllUniformLocations() {
+		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
+		location_viewMatrix = super.getUniformLocation("viewMatrix");
+	}
+
+	@Override
+	protected void bindAttributes() {
+		super.bindAttribute(0, "position");
+	}
+
+}
